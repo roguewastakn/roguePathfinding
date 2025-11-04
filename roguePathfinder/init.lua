@@ -1,7 +1,7 @@
---- Pathfinder3D.lua ---
+--- roguePathfinder.lua ---
 
 --[[
-    Module: Pathfinder3D
+    Module: roguePathfinder
     Description: Highly optimized, custom 3D pathfinding module for Roblox using a Sparse Voxel Octree (SVO)
                  for global path planning and a local collision avoidance system for dynamic obstacle handling.
     Author: Manus
@@ -10,10 +10,10 @@
 -- Assuming Vector3 and Heap modules are available in the environment.
 -- In a real Roblox environment, Vector3 is a built-in type.
 -- For this demonstration, we assume they are required from sibling scripts.
-local Vector3 = require(script.Vector3)
-local Heap = require(script.Heap)
+local Vector3 = require( script.Vector3 );
+local Heap    = require( script.Heap );
 
-local Pathfinder3D = {}
+local roguePathfinder = {}
 local SVO = {} -- Internal table for the Sparse Voxel Octree data
 local CONFIG = {
     -- Voxelization settings
@@ -158,7 +158,7 @@ local function GetNeighbors(node)
     return neighbors
 end
 
-function Pathfinder3D:ComputePath(startPos, endPos)
+function roguePathfinder:ComputePath(startPos, endPos)
     local startNode = FindClosestNode(startPos)
     local endNode = FindClosestNode(endPos)
 
@@ -282,7 +282,7 @@ end
 -- @param targetPos Vector3: The next global waypoint from the computed path.
 -- @param obstacles table: A list of nearby dynamic obstacles (e.g., { Pos=Vector3, Vel=Vector3, Radius=number }).
 -- @return Vector3: The new, safe velocity vector for the agent.
-function Pathfinder3D:GetSteeringVelocity(currentPos, currentVel, targetPos, obstacles)
+function roguePathfinder:GetSteeringVelocity(currentPos, currentVel, targetPos, obstacles)
     -- 1. Calculate the preferred velocity (towards targetPos).
     local preferredVelocity = (targetPos - currentPos).unit * CONFIG.MAX_SPEED
     local safeVelocity = preferredVelocity
@@ -319,12 +319,12 @@ end
 -- 5. Public API and Initialization
 -- =================================================================================
 
-function Pathfinder3D.new(configTable)
+function roguePathfinder.new(configTable)
     for k, v in pairs(configTable or {}) do
         CONFIG[k] = v
     end
     SVO = BuildSVO()
-    return Pathfinder3D
+    return roguePathfinder
 end
 
-return Pathfinder3D
+return roguePathfinder
